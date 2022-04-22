@@ -1,4 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const h2 = document.getElementById('poruka');
+
+    const poruke = [
+        'Bravoo!',
+        'Eej! Bas ti ide!',
+        'Samo cepaj!!',
+        'Oladi malo, riknuce ti komp!',
+        'Oooooo! Ma sve su tvoje :)',
+        'Odlicno!',
+        'Rekord rekordaa!',
+        'Svaka cast genijee!',
+        'Majstoree!',
+        'Dobar si!',
+        'Razbijas!',
+        'Rokaj! Rokaj!',
+        'Samo nastavi!',
+        'Odee tastatura!',
+        'Prosecno ;)'
+    ];
+
     const polja = document.querySelectorAll('.grid div');
     const rezultat = document.querySelector('span');
     const dugme = document.querySelector('.start');
@@ -9,13 +29,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let zmijaObj = [2, 1, 0];
 
     let pravac = 1;
-    let brzina = 0.7;
+    let brzina = 0.9;
     let poeni = 0;
     let vreme1 = 0;
     let vreme2 = 0;
 
 
     function startajIgru(){
+
+        if (!(h2.innerHTML === '')){
+            h2.classList.remove('visible');
+            h2.classList.add('nonVisible');
+        }
+
         zmijaObj.forEach(poz => polja[poz].classList.remove('zmija'));
         polja[hranaPozicija].classList.remove('hrana');
         clearInterval(vreme2);
@@ -23,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nasumicnaHrana();
         pravac = 1;
         rezultat.innerText = poeni;
-        vreme1 = 300;
+        vreme1 = 400;
         zmijaObj = [2, 1, 0];
         trenutnaPozicija = 0;
         zmijaObj.forEach(poz => polja[poz].classList.add('zmija'));
@@ -38,6 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
             (zmijaObj[0] - debljina < 0 && pravac === -debljina) ||                      //za gornji zid
             polja[zmijaObj[0] + pravac].classList.contains('zmija')                      //sama sebe
         ){
+            h2.classList.remove('nonVisible');
+            h2.innerHTML = 'Kraj Igre! Hehe :)';
+            h2.classList.add('visible');
+
             return clearInterval(vreme2);
         }
 
@@ -52,6 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
             nasumicnaHrana();
             poeni++;
             rezultat.textContent = poeni;
+
+            h2.classList.remove('nonVisible');
+            h2.innerHTML = `${poruke[Math.floor(Math.random() * poruke.length)]}`;
+            h2.classList.add('visible');
+
+            setTimeout(prikazPoruke, 2000);
+
             clearInterval(vreme2);
             vreme1 = vreme1 * brzina;
             vreme2 = setInterval(moveOutComes, vreme1);
@@ -59,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         polja[zmijaObj[0]].classList.add('zmija');
     };
 
-    function kontrole(e){
+    function kontrole(e){    // za strelice
         polja[trenutnaPozicija].classList.remove('zmija');
 
         if(e.keyCode === 39) {      //  na desno
@@ -73,7 +110,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    document.addEventListener('keyup', kontrole);
+    function kontrole2(e){        // za 'asdw' kontrole
+        polja[trenutnaPozicija].classList.remove('zmija');
+
+        if(e.keyCode === 68) {      //  na d
+            pravac = 1;
+        } else if (e.keyCode === 87) {   //  na w
+            pravac = -debljina;
+        } else if (e.keyCode === 65) {   // na a
+            pravac = -1;       
+        } else if (e.keyCode === 83){   // na s
+            pravac = +debljina;
+        }
+    };
+
+    document.addEventListener('keydown', kontrole);
+    document.addEventListener('keydown', kontrole2);
 
     dugme.addEventListener('click', startajIgru);
 
@@ -83,5 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } while (polja[hranaPozicija].classList.contains('zmija'));
         polja[hranaPozicija].classList.add('hrana');
     };
+
+    function prikazPoruke(){
+        h2.classList.remove('visible');
+        h2.classList.add('nonVisible');
+        h2.innerHTML = '';
+    }
 
 });
